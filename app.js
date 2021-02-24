@@ -1,4 +1,5 @@
 "use strict";
+require("dotenv").config();
 const express = require("express");
 const app = express();
 const ejs = require("ejs");
@@ -18,8 +19,7 @@ const UserSchema = mongoose.Schema({
     password: {type: String, required: true}
 });
 
-const secret = "Thisisourlittlesecret!";
-UserSchema.plugin(encrypt, {secret: secret, encryptedFields: ["password"]});
+UserSchema.plugin(encrypt, {secret: process.env.SECRET, encryptedFields: ["password"]});
 
 const User = new mongoose.model("User", UserSchema);
 
