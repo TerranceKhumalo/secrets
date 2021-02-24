@@ -3,11 +3,14 @@ const express = require("express");
 const app = express();
 const ejs = require("ejs");
 const mongoose = require("mongoose");
+const encrypt = require("mongoose-encryption");
 const port = 3000;
 
 app.use(express.static("public"));
 app.use(express.urlencoded({extended: true}));
 app.set("view engine", "ejs");
+
+
 
 mongoose.connect("mongodb://localhost/userDB", {useNewUrlParser: true, useUnifiedTopology: true});
 const UserSchema = mongoose.Schema({
@@ -15,7 +18,10 @@ const UserSchema = mongoose.Schema({
     password: {type: String, required: true}
 });
 
-const User = mongoose.model("User", UserSchema);
+const secret = "Thisisourlittlesecret!";
+UserSchema.plugin(encrypt, {secret: secret, encryptedFields: ["password"]});
+
+const User = new mongoose.model("User", UserSchema);
 
 
 app.get("/", (req,res)=>{
